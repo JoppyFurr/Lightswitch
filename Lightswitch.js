@@ -45,11 +45,10 @@ function Execute (bridge, command) {
     var message = new Buffer (3);
     message[0] = command; message[1] = 0x00; message[2] = 0x55;
     udp_socket.send (message, 0, 3, bridge.port, bridge.hostname);
-    console.log (" -> Execute command %s.", command);
 }
 
 var Command = {};
-Command["On"]  = function (model, group) { console.log ("model=%s, group=%s", model, group); return Model[model][group].on;  };
+Command["On"]  = function (model, group) { return Model[model][group].on;  };
 Command["Off"] = function (model, group) { return Model[model][group].off; };
 
 /* Web stuff */
@@ -57,6 +56,7 @@ var express = require("express"),
     app = express(),
     port = process.env.PORT || 3000;
 
+app.use (express.static ("Client", { "index": ["main.html"] } ));
 
 app.get ("/", function onListenEvent (req, res) {
     res.writeHead (200, { "Content-Type": "text/html" });
@@ -65,7 +65,7 @@ app.get ("/", function onListenEvent (req, res) {
     res.end ("<pre> GET /Lightswitch/&lt;Room_Name&gt;/{On|Off} </pre>");
 });
 
-app.get ("/Lightswitch/:room/:command", function (req, res) {
+app.put ("/Lightswitch/:room/:command", function (req, res) {
     if (!(req.params.room in Room)) {
         res.send ( { Result: "No such room" } );
     }

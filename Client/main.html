@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title> Lightswitch </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+    <script src="client.js"></script>
+    <style>
+* {
+    margin: 0;
+    cursor: default;
+}
+.menubar {
+    background-color: #f0f0f0;
+    float: left;
+    width: 100%;
+}
+.menubar_title {
+    font-weight: bold;
+    font-style: italic;
+    float: left;
+    padding: 5px;
+}
+.menubar_item {
+    float: left;
+    padding: 5px;
+}
+.menubar_selected {
+    float: left;
+    font-weight: bold;
+    background-color: #c0c0c0;
+    padding: 5px;
+}
+.lightswitch_button {
+    background-color: #e0e0e0;
+    float: left;
+    padding: 10px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+    </style>
+</head>
+<body ng-app="Lightswitch" ng-controller="LightswitchController as lc">
+    <!-- Menubar -->
+    <div class="menubar">
+        <div class="menubar_title"> Lightswitch </div>
+        <div ng-repeat="room in lc.rooms | orderBy:'name'"
+             ng-click="lc.selectRoom(room)"
+             ng-class="{ menubar_selected: lc.active_room == room, menubar_item: lc.active_room != room }"> {{ room.name }} </div>
+    </div>
+    <br />
+
+    <!-- Buttons -->
+    <div ng-click="lc.roomOn()" class="lightswitch_button"> On </div>
+    <div ng-click="lc.roomOff()" class="lightswitch_button"> Off </div>
+
+</body>
+</html>

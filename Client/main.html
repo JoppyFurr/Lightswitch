@@ -25,6 +25,9 @@
     float: left;
     padding: 5px;
 }
+.menubar_item:hover {
+    background-color: #e0e0e0;
+}
 .menubar_selected {
     float: left;
     font-weight: bold;
@@ -38,21 +41,24 @@
     margin-top: 5px;
     margin-left: 5px;
 }
+.lightswitch_button:hover {
+    background-color: #f0f0f0;
+}
     </style>
 </head>
 <body ng-app="Lightswitch" ng-controller="LightswitchController as lc">
     <!-- Menubar -->
     <div class="menubar">
         <div class="menubar_title"> Lightswitch </div>
-        <div ng-repeat="room in lc.rooms | orderBy:'name'"
-             ng-click="lc.selectRoom(room)"
+        <div ng-repeat="room in roomlist | orderBy:'name'"
+             ng-click="lc.select_room(room)"
              ng-class="{ menubar_selected: lc.active_room == room, menubar_item: lc.active_room != room }"> {{ room.name }} </div>
     </div>
     <br />
 
     <!-- Buttons -->
-    <div ng-click="lc.roomOn()" class="lightswitch_button"> On </div>
-    <div ng-click="lc.roomOff()" class="lightswitch_button"> Off </div>
+    <div ng-click="lc.send_command('On')" class="lightswitch_button"> On </div>
+    <div ng-click="lc.send_command('Off')" class="lightswitch_button"> Off </div>
 
 </body>
 </html>

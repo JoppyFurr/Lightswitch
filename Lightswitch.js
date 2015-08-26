@@ -58,11 +58,12 @@ var express = require("express"),
 
 app.use (express.static ("Client", { "index": ["main.html"] } ));
 
-app.get ("/", function onListenEvent (req, res) {
-    res.writeHead (200, { "Content-Type": "text/html" });
-    res.write ("<h1> Lightswitch </h1>");
-    res.write ("<p> A proper web interface will come later. For now an HTTP GET API will do. <p>");
-    res.end ("<pre> GET /Lightswitch/&lt;Room_Name&gt;/{On|Off} </pre>");
+app.get ("/Lightswitch/List/", function onListenEvent (req, res) {
+    var roomlist = [];
+    for (var room in Room) {
+        roomlist.push ( { name:room, model:Room[room].model } );
+    }
+    res.send (roomlist);
 });
 
 app.put ("/Lightswitch/:room/:command", function (req, res) {

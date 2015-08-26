@@ -18,38 +18,62 @@ Room["Kitchen"] = { bridge: fluffylight, model: "white", group: [2] };
 Room["Lounge" ] = { bridge: fluffylight, model: "rgbw",  group: [1, 2] };
 
 /* Command sets for various LED bulb models */
-var Model = {};
-Model["white"] = [
-    /*   All   */ { on: 0x35, off:0x39 },
-    /* Group 1 */ { on: 0x38, off:0x3b },
-    /* Group 2 */ { on: 0x3d, off:0x33 },
-    /* Group 3 */ { on: 0x37, off:0x3a },
-    /* Group 4 */ { on: 0x32, off:0x36 }
+var Command = {};
+Command["white"] = [
+    /*   All   */ { On: 0x35, Off: 0x39, Brighter: 0x3c, Dimmer: 0x34 },
+    /* Group 1 */ { On: 0x38, Off: 0x3b },
+    /* Group 2 */ { On: 0x3d, Off: 0x33 },
+    /* Group 3 */ { On: 0x37, Off: 0x3a },
+    /* Group 4 */ { On: 0x32, Off: 0x36 }
     ];
-Model["rgb"] = [
-    /*   All   */ { on: 0x22, off:0x21 }
+Command["rgb"] = [
+    /*   All   */ { On: 0x22, Off: 0x21, Brighter: 0x23, Dimmer: 0x24 }
     ];
-Model["rgbw"] = [
-    /*   All   */ { on: 0x42, off:0x41 },
-    /* Group 1 */ { on: 0x45, off:0x46 },
-    /* Group 2 */ { on: 0x47, off:0x48 },
-    /* Group 3 */ { on: 0x49, off:0x4a },
-    /* Group 4 */ { on: 0x4b, off:0x4c }
+Command["rgbw"] = [
+    /*   All   */ { On: 0x42, Off: 0x41 },
+    /* Group 1 */ { On: 0x45, Off: 0x46 },
+    /* Group 2 */ { On: 0x47, Off: 0x48 },
+    /* Group 3 */ { On: 0x49, Off: 0x4a },
+    /* Group 4 */ { On: 0x4b, Off: 0x4c }
     ];
 
-/* Command execution */
 var dgram = require ("dgram");
 var udp_socket = dgram.createSocket("udp4");
 
-function Execute (bridge, command) {
+function send_command (bridge, command) {
     var message = new Buffer (3);
     message[0] = command; message[1] = 0x00; message[2] = 0x55;
     udp_socket.send (message, 0, 3, bridge.port, bridge.hostname);
 }
 
-var Command = {};
-Command["On"]  = function (model, group) { return Model[model][group].on;  };
-Command["Off"] = function (model, group) { return Model[model][group].off; };
+function execute (room, command) {
+    var command_count = 0;
+    var delay = 100; /* The bridge requires a delay between commands */
+
+    for (var i = 0; i < room.group.length; i++) {
+
+        /* Do we first need to send an 'On' signal to select the bulb? */
+        if (   (!(Command[room.model][room.group[i]].hasOwnProperty(command)))
+            && (Command[room.model][0].hasOwnProperty(command)))
+        {
+            /* First send an 'On' for the wanted group */
+            setTimeout (send_command, delay * command_count, room.bridge,
+                        Command[room.model][room.group[i]]["On"]);
+            command_count += 1;
+
+            /* Then send the command without the group */
+            setTimeout (send_command, delay * command_count, room.bridge,
+                        Command[room.model][0][command]);
+            command_count += 1;
+        }
+        /* Simple command */
+        else {
+            setTimeout (send_command, delay * command_count, room.bridge,
+                        Command[room.model][room.group[i]][command]);
+            command_count += 1;
+        }
+    }
+};
 
 /* Web stuff */
 var express = require("express"),
@@ -67,22 +91,23 @@ app.get ("/Lightswitch/List/", function onListenEvent (req, res) {
 });
 
 app.put ("/Lightswitch/:room/:command", function (req, res) {
+
+    /* Check the room */
     if (!(req.params.room in Room)) {
         res.send ( { Result: "No such room" } );
+        return;
     }
-    else if (!(req.params.command in Command)) {
-        res.send ( { Result: "No such command" } );
-    }
-    else {
-        var room = Room[req.params.room];
-        var command = req.params.command;
-        res.send( { Result: "Ack" } );
+    var room = Room[req.params.room];
 
-        for (var i = 0; i < room.group.length; i++) {
-            var delay = i * 100; /* The bridge requires a delay between commands */
-            setTimeout ( Execute, delay, room.bridge, Command[command] (room.model, room.group[i]));
-        }
+    /* Check the command */
+    if (!Command[room.model][0].hasOwnProperty(req.params.command)) {
+        res.send ( { Result: "No such command" } );
+        return;
     }
+    var command = req.params.command;
+
+    res.send( { Result: "Ack" } );
+    execute (room, command);
 });
 
 var server = app.listen (port, function() {

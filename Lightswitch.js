@@ -20,17 +20,18 @@ Room["Lounge" ] = { bridge: fluffylight, model: "rgbw",  group: [1, 2] };
 /* Command sets for various LED bulb models */
 var Command = {};
 Command["white"] = [
-    /*   All   */ { On: 0x35, Off: 0x39, Brighter: 0x3c, Dimmer: 0x34 },
+    /*   All   */ { On: 0x35, Off: 0x39, Brighter: 0x3c, Dimmer: 0x34, Warmer: 0x3e, Cooler: 0x3f },
     /* Group 1 */ { On: 0x38, Off: 0x3b },
     /* Group 2 */ { On: 0x3d, Off: 0x33 },
     /* Group 3 */ { On: 0x37, Off: 0x3a },
     /* Group 4 */ { On: 0x32, Off: 0x36 }
     ];
 Command["rgb"] = [
-    /*   All   */ { On: 0x22, Off: 0x21, Brighter: 0x23, Dimmer: 0x24 }
+    /*   All   */ { On: 0x22, Off: 0x21, Brighter: 0x23, Dimmer: 0x24, Faster: 0x25, Slower: 0x26,
+                    Next:0x27, Previous: 0x28 }
     ];
 Command["rgbw"] = [
-    /*   All   */ { On: 0x42, Off: 0x41 },
+    /*   All   */ { On: 0x42, Off: 0x41, Faster: 0x44, Slower: 0x43, Next: 0x4d },
     /* Group 1 */ { On: 0x45, Off: 0x46 },
     /* Group 2 */ { On: 0x47, Off: 0x48 },
     /* Group 3 */ { On: 0x49, Off: 0x4a },

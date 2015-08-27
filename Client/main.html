@@ -56,11 +56,51 @@
     </div>
     <br />
 
-    <!-- Buttons -->
-    <div ng-click="lc.send_command('On')" class="lightswitch_button"> On </div>
-    <div ng-click="lc.send_command('Off')" class="lightswitch_button"> Off </div>
-    <div ng-click="lc.send_command('Brighter')" class="lightswitch_button"> Brighter </div>
-    <div ng-click="lc.send_command('Dimmer')" class="lightswitch_button"> Dimmer </div>
+    <!-- White Bulb Buttons -->
+    <div ng-show="lc.active_room.model == 'white'">
+        <div ng-click="lc.send_command('On')"       class="lightswitch_button"> On </div>
+        <div ng-click="lc.send_command('Off')"      class="lightswitch_button"> Off </div>
+
+        <div ng-click="lc.send_command('Max')"      class="lightswitch_button"> Max </div>
+        <div ng-click="lc.send_command('Brighter')" class="lightswitch_button"> Brighter </div>
+        <div ng-click="lc.send_command('Dimmer')" class="lightswitch_button"> Dimmer </div>
+        <div ng-click="lc.send_command('Nightlight')" class="lightswitch_button"> Nightlight </div>
+
+        <div ng-click="lc.send_command('Warmer')" class="lightswitch_button"> Warmer </div>
+        <div ng-click="lc.send_command('Cooler')" class="lightswitch_button"> Cooler </div>
+    </div>
+
+    <!-- RGB Bulb Buttons -->
+    <div ng-show="lc.active_room.model == 'rgb'">
+        <div ng-click="lc.send_command('On')"       class="lightswitch_button"> On </div>
+        <div ng-click="lc.send_command('Off')"      class="lightswitch_button"> Off </div>
+
+        <div ng-click="lc.send_command('Brighter')" class="lightswitch_button"> Brighter </div>
+        <div ng-click="lc.send_command('Dimmer')" class="lightswitch_button"> Dimmer </div>
+
+        <div ng-click="lc.send_command('Next')" class="lightswitch_button"> Next </div>
+        <div ng-click="lc.send_command('Previous')" class="lightswitch_button"> Previous </div>
+        <div ng-click="lc.send_command('Faster')" class="lightswitch_button"> Faster </div>
+        <div ng-click="lc.send_command('Slower')" class="lightswitch_button"> Slower </div>
+
+        <div ng-click="lc.send_command('Colour')" class="lightswitch_button"> Colour </div>
+        <div ng-click="lc.send_command('White')" class="lightswitch_button"> White </div>
+    </div>
+
+    <!-- RGBW Bulb Buttons -->
+    <div ng-show="lc.active_room.model == 'rgbw'">
+        <div ng-click="lc.send_command('On')"       class="lightswitch_button"> On </div>
+        <div ng-click="lc.send_command('Off')"      class="lightswitch_button"> Off </div>
+
+        <div ng-click="lc.send_command('Brightness')" class="lightswitch_button"> Brightness </div>
+
+        <div ng-click="lc.send_command('Next')" class="lightswitch_button"> Next </div>
+        <div ng-click="lc.send_command('Faster')" class="lightswitch_button"> Faster </div>
+        <div ng-click="lc.send_command('Slower')" class="lightswitch_button"> Slower </div>
+
+        <div ng-click="lc.send_command('Colour')" class="lightswitch_button"> Colour </div>
+        <div ng-click="lc.send_command('White')" class="lightswitch_button"> White </div>
+    </div>
 
 </body>
 </html>

@@ -44,6 +44,35 @@
 .lightswitch_button:hover {
     background-color: #f0f0f0;
 }
+.lightswitch_colour_select {
+    background-color: #e0e0e0;
+    background-image:
+        linear-gradient(to right,
+                        #f0d8d8,
+                        #e8e8d0,
+                        #d8f0d8,
+                        #d0e8e8,
+                        #d8d8f0,
+                        #e8d0e8,
+                        #f0d8d8);
+    float: left;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.lightswitch_colour_select:hover {
+    background-image:
+        linear-gradient(to right,
+                        #ffd0d0,
+                        #f0f0c0,
+                        #d0ffd0,
+                        #c0f0f0,
+                        #d0d0ff,
+                        #f0c0f0,
+                        #ffd0d0);
+}
     </style>
 </head>
 <body ng-app="Lightswitch" ng-controller="LightswitchController as lc">
@@ -83,7 +112,7 @@
         <div ng-click="lc.send_command('Faster')" class="lightswitch_button"> Faster </div>
         <div ng-click="lc.send_command('Slower')" class="lightswitch_button"> Slower </div>
 
-        <div ng-click="lc.send_command('Colour')" class="lightswitch_button"> Colour </div>
+        <div ng-click="lc.send_command('Colour', $event)" class="lightswitch_colour_select"> Colour </div>
         <div ng-click="lc.send_command('White')" class="lightswitch_button"> White </div>
     </div>
 
@@ -92,13 +121,13 @@
         <div ng-click="lc.send_command('On')"       class="lightswitch_button"> On </div>
         <div ng-click="lc.send_command('Off')"      class="lightswitch_button"> Off </div>
 
-        <div ng-click="lc.send_command('Brightness')" class="lightswitch_button"> Brightness </div>
+        <div ng-click="lc.send_command('Brightness', $event)" class="lightswitch_button"> Brightness </div>
 
         <div ng-click="lc.send_command('Next')" class="lightswitch_button"> Next </div>
         <div ng-click="lc.send_command('Faster')" class="lightswitch_button"> Faster </div>
         <div ng-click="lc.send_command('Slower')" class="lightswitch_button"> Slower </div>
 
-        <div ng-click="lc.send_command('Colour')" class="lightswitch_button"> Colour </div>
+        <div ng-click="lc.send_command('Colour', $event)" class="lightswitch_colour_select"> Colour </div>
         <div ng-click="lc.send_command('White')" class="lightswitch_button"> White </div>
     </div>
 

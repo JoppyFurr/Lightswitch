@@ -28,10 +28,10 @@ Command["white"] = [
     ];
 Command["rgb"] = [
     /*   All   */ { On: 0x22, Off: 0x21, Brighter: 0x23, Dimmer: 0x24, Faster: 0x25, Slower: 0x26,
-                    Next:0x27, Previous: 0x28 }
+                    Next:0x27, Previous: 0x28, Colour:0x20 }
     ];
 Command["rgbw"] = [
-    /*   All   */ { On: 0x42, Off: 0x41, Faster: 0x44, Slower: 0x43, Next: 0x4d },
+    /*   All   */ { On: 0x42, Off: 0x41, Faster: 0x44, Slower: 0x43, Next: 0x4d, Colour: 0x40 },
     /* Group 1 */ { On: 0x45, Off: 0x46 },
     /* Group 2 */ { On: 0x47, Off: 0x48 },
     /* Group 3 */ { On: 0x49, Off: 0x4a },
@@ -41,13 +41,13 @@ Command["rgbw"] = [
 var dgram = require ("dgram");
 var udp_socket = dgram.createSocket("udp4");
 
-function send_command (bridge, command) {
+function send_command (bridge, command, param) {
     var message = new Buffer (3);
-    message[0] = command; message[1] = 0x00; message[2] = 0x55;
+    message[0] = command; message[1] = param; message[2] = 0x55;
     udp_socket.send (message, 0, 3, bridge.port, bridge.hostname);
 }
 
-function execute (room, command) {
+function execute (room, command, param) {
     var command_count = 0;
     var delay = 100; /* The bridge requires a delay between commands */
 
@@ -59,18 +59,18 @@ function execute (room, command) {
         {
             /* First send an 'On' for the wanted group */
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][room.group[i]]["On"]);
+                        Command[room.model][room.group[i]]["On"], 0x00);
             command_count += 1;
 
             /* Then send the command without the group */
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][0][command]);
+                        Command[room.model][0][command], param);
             command_count += 1;
         }
         /* Simple command */
         else {
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][room.group[i]][command]);
+                        Command[room.model][room.group[i]][command], param);
             command_count += 1;
         }
     }
@@ -91,7 +91,7 @@ app.get ("/Lightswitch/List/", function onListenEvent (req, res) {
     res.send (roomlist);
 });
 
-app.put ("/Lightswitch/:room/:command", function (req, res) {
+app.put ("/Lightswitch/:room/:command/:param?", function (req, res) {
 
     /* Check the room */
     if (!(req.params.room in Room)) {
@@ -107,8 +107,16 @@ app.put ("/Lightswitch/:room/:command", function (req, res) {
     }
     var command = req.params.command;
 
+    var param = 0x00;
+    if (req.params.param)
+    {
+        param = Math.round(req.params.param);
+        param = Math.min (param, 0xff);
+        param = Math.max (param, 0x00);
+    }
+
     res.send( { Result: "Ack" } );
-    execute (room, command);
+    execute (room, command, param);
 });
 
 var server = app.listen (port, function() {

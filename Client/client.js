@@ -10,7 +10,13 @@
             this.active_room = room;
         };
 
-        this.send_command = function(command) {
+        this.send_command = function(command, event) {
+            if (arguments.length == 2)
+            {
+                var param = (event.clientX - event.target.offsetLeft) * 256 / event.target.clientWidth;
+                command = command + "/" + param;
+            }
+
             $http.put ("http://ferret:3000/Lightswitch/" + this.active_room.name + "/" + command).
                 then (function (res) { if (res.data.Result != "Ack") { alert (res.data.Result) } },
                       function (res) { alert ( "AJAX Failure" ); });

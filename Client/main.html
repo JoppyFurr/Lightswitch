@@ -5,75 +5,7 @@
     <title> Lightswitch </title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
     <script src="client.js"></script>
-    <style>
-* {
-    margin: 0;
-    cursor: default;
-}
-.menubar {
-    background-color: #f0f0f0;
-    float: left;
-    width: 100%;
-}
-.menubar_title {
-    font-weight: bold;
-    font-style: italic;
-    float: left;
-    padding: 5px;
-}
-.menubar_item {
-    float: left;
-    padding: 5px;
-}
-.menubar_item:hover {
-    background-color: #e0e0e0;
-}
-.menubar_selected {
-    float: left;
-    font-weight: bold;
-    background-color: #c0c0c0;
-    padding: 5px;
-}
-.lightswitch_button {
-    background-color: #e0e0e0;
-    float: left;
-    padding: 10px;
-    margin-top: 5px;
-    margin-left: 5px;
-}
-.lightswitch_button:hover {
-    background-color: #f0f0f0;
-}
-.lightswitch_colour_select {
-    background-color: #e0e0e0;
-    background-image:
-        linear-gradient(to right,
-                        #f0d8d8,
-                        #e8e8d0,
-                        #d8f0d8,
-                        #d0e8e8,
-                        #d8d8f0,
-                        #e8d0e8,
-                        #f0d8d8);
-    float: left;
-    padding: 10px;
-    padding-left: 50px;
-    padding-right: 50px;
-    margin-top: 5px;
-    margin-left: 5px;
-}
-.lightswitch_colour_select:hover {
-    background-image:
-        linear-gradient(to right,
-                        #ffd0d0,
-                        #f0f0c0,
-                        #d0ffd0,
-                        #c0f0f0,
-                        #d0d0ff,
-                        #f0c0f0,
-                        #ffd0d0);
-}
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body ng-app="Lightswitch" ng-controller="LightswitchController as lc">
     <!-- Menubar -->

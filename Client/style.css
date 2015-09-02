@@ -66,3 +66,23 @@
                         #d0d0ff);
 
 }
+.lightswitch_brightness_select {
+    background-color: #e0e0e0;
+    background-image:
+        linear-gradient(to right,
+                        #d8d8d8,
+                        #e8e8e8);
+    float: left;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.lightswitch_brightness_select:hover {
+    background-image:
+        linear-gradient(to right,
+                        #d8d8d8,
+                        #f8f8f8);
+
+}

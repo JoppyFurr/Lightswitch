@@ -31,7 +31,8 @@ Command["rgb"] = [
                     Next:0x27, Previous: 0x28, Colour:0x20 }
     ];
 Command["rgbw"] = [
-    /*   All   */ { On: 0x42, Off: 0x41, Faster: 0x44, Slower: 0x43, Next: 0x4d, Colour: 0x40 },
+    /*   All   */ { On: 0x42, Off: 0x41, Faster: 0x44, Slower: 0x43, Next: 0x4d, Colour: 0x40,
+                    Brightness: 0x4e },
     /* Group 1 */ { On: 0x45, Off: 0x46 },
     /* Group 2 */ { On: 0x47, Off: 0x48 },
     /* Group 3 */ { On: 0x49, Off: 0x4a },
@@ -50,6 +51,15 @@ function send_command (bridge, command, param) {
 function execute (room, command, param) {
     var command_count = 0;
     var delay = 100; /* The bridge requires a delay between commands */
+
+    /* Special case for brightnes */
+    if (command == "Brightness")
+    {
+        /* The brightness parameter should be mapped from 2 -> 27 */
+        param = Math.round(2 + param / 256 * 25);
+        param = Math.min (param, 0xff);
+        param = Math.max (param, 0x00);
+    }
 
     for (var i = 0; i < room.group.length; i++) {
 

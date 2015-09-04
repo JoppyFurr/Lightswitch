@@ -12,7 +12,8 @@ var fluffylight = {
 
 /* Room configuration */
 var Room = {};
-Room["Bedroom"] = { bridge: fluffylight, model: "rgb",   group: [0] };
+Room["Bedroom"] = { bridge: fluffylight, model: "rgbw",  group: [3] };
+Room["Lamps"]   = { bridge: fluffylight, model: "rgb",   group: [0] };
 Room["Hallway"] = { bridge: fluffylight, model: "white", group: [1] };
 Room["Kitchen"] = { bridge: fluffylight, model: "white", group: [2] };
 Room["Lounge" ] = { bridge: fluffylight, model: "rgbw",  group: [1, 2] };

@@ -20,11 +20,12 @@ Room["Lounge" ] = { bridge: fluffylight, model: "rgbw",  group: [1, 2] };
 /* Command sets for various LED bulb models */
 var Command = {};
 Command["white"] = [
-    /*   All   */ { On: 0x35, Off: 0x39, Brighter: 0x3c, Dimmer: 0x34, Warmer: 0x3e, Cooler: 0x3f },
-    /* Group 1 */ { On: 0x38, Off: 0x3b },
-    /* Group 2 */ { On: 0x3d, Off: 0x33 },
-    /* Group 3 */ { On: 0x37, Off: 0x3a },
-    /* Group 4 */ { On: 0x32, Off: 0x36 }
+    /*   All   */ { On: 0x35, Off: 0x39, Brighter: 0x3c, Dimmer: 0x34, Warmer: 0x3e, Cooler: 0x3f,
+                    Max: [ 0x35, 0xb5 ], Nightlight: [ 0x39, 0xb9 ] },
+    /* Group 1 */ { On: 0x38, Off: 0x3b, Max: [ 0x38, 0xb8 ], Nightlight: [ 0x3b, 0xbb ] },
+    /* Group 2 */ { On: 0x3d, Off: 0x33, Max: [ 0x3d, 0xbd ], Nightlight: [ 0x33, 0xb3 ] },
+    /* Group 3 */ { On: 0x37, Off: 0x3a, Max: [ 0x37, 0xb7 ], Nightlight: [ 0x3a, 0xba ] },
+    /* Group 4 */ { On: 0x32, Off: 0x36, Max: [ 0x32, 0xb2 ], Nightlight: [ 0x36, 0xb6 ] }
     ];
 Command["rgb"] = [
     /*   All   */ { On: 0x22, Off: 0x21, Brighter: 0x23, Dimmer: 0x24, Faster: 0x25, Slower: 0x26,
@@ -32,11 +33,11 @@ Command["rgb"] = [
     ];
 Command["rgbw"] = [
     /*   All   */ { On: 0x42, Off: 0x41, Faster: 0x44, Slower: 0x43, Next: 0x4d, Colour: 0x40,
-                    Brightness: 0x4e },
-    /* Group 1 */ { On: 0x45, Off: 0x46 },
-    /* Group 2 */ { On: 0x47, Off: 0x48 },
-    /* Group 3 */ { On: 0x49, Off: 0x4a },
-    /* Group 4 */ { On: 0x4b, Off: 0x4c }
+                    Brightness: 0x4e, White: [ 0x42, 0xc2 ] },
+    /* Group 1 */ { On: 0x45, Off: 0x46, White: [ 0x45, 0xc5 ] },
+    /* Group 2 */ { On: 0x47, Off: 0x48, White: [ 0x47, 0xc7 ] },
+    /* Group 3 */ { On: 0x49, Off: 0x4a, White: [ 0x49, 0xc9 ] },
+    /* Group 4 */ { On: 0x4b, Off: 0x4c, White: [ 0x4b, 0xcb ] }
     ];
 
 var dgram = require ("dgram");
@@ -63,9 +64,22 @@ function execute (room, command, param) {
 
     for (var i = 0; i < room.group.length; i++) {
 
+        /* Special case: Two-packet commands */
+        if (Array.isArray(Command[room.model][room.group[i]][command])) {
+
+            /* Send the first part */
+            setTimeout (send_command, delay * command_count, room.bridge,
+                        Command[room.model][room.group[i]][command][0], 0x00);
+            command_count += 1;
+
+            /* Send the second part */
+            setTimeout (send_command, delay * command_count, room.bridge,
+                        Command[room.model][room.group[i]][command][1], 0x00);
+            command_count += 1;
+        }
         /* Do we first need to send an 'On' signal to select the bulb? */
-        if (   (!(Command[room.model][room.group[i]].hasOwnProperty(command)))
-            && (Command[room.model][0].hasOwnProperty(command)))
+        else if ((!(Command[room.model][room.group[i]].hasOwnProperty(command)))
+                && (Command[room.model][0].hasOwnProperty(command)))
         {
             /* First send an 'On' for the wanted group */
             setTimeout (send_command, delay * command_count, room.bridge,

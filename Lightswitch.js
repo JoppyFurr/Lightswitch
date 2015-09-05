@@ -4,6 +4,7 @@
  * This is a work-in-progress tool for controlling LED lightbulbs
  * via a network bridge that accepts UDP packets as commands.
  */
+
 /* Bridge configuration */
 var fluffylight = {
     hostname: "Fluffylight",
@@ -65,49 +66,53 @@ function execute (room, command, param) {
 
     for (var i = 0; i < room.group.length; i++) {
 
-        /* Special case: Two-packet commands */
-        if (Array.isArray(Command[room.model][room.group[i]][command])) {
+        var model_commands = Command[room.model][0];
+        var group_commands = Command[room.model][room.group[i]];
+
+        /* Case 1: Two-packet commands */
+        if (Array.isArray(group_commands[command])) {
 
             /* Send the first part */
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][room.group[i]][command][0], 0x00);
+                        group_commands[command][0], 0x00);
             command_count += 1;
 
             /* Send the second part */
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][room.group[i]][command][1], 0x00);
+                        group_commands[command][1], 0x00);
             command_count += 1;
         }
-        /* Do we first need to send an 'On' signal to select the bulb? */
-        else if ((!(Command[room.model][room.group[i]].hasOwnProperty(command)))
-                && (Command[room.model][0].hasOwnProperty(command)))
+        /* Case 2: Commands that affect the group most recently turned on */
+        else if (model_commands.hasOwnProperty(command)
+             && !group_commands.hasOwnProperty(command))
         {
             /* First send an 'On' for the wanted group */
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][room.group[i]]["On"], 0x00);
+                        group_commands["On"], 0x00);
             command_count += 1;
 
             /* Then send the command without the group */
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][0][command], param);
+                        model_commands[command], param);
             command_count += 1;
         }
-        /* Simple command */
+        /* Case 3: Single-packet commands */
         else {
             setTimeout (send_command, delay * command_count, room.bridge,
-                        Command[room.model][room.group[i]][command], param);
+                        group_commands[command], param);
             command_count += 1;
         }
     }
 };
 
-/* Web stuff */
+/* HTTP Server */
 var express = require("express"),
     app = express(),
     port = process.env.PORT || 3000;
 
 app.use (express.static ("Client", { "index": ["main.html"] } ));
 
+/* API to retrieve the room list */
 app.get ("/Lightswitch/List/", function onListenEvent (req, res) {
     var roomlist = [];
     for (var room in Room) {
@@ -116,6 +121,7 @@ app.get ("/Lightswitch/List/", function onListenEvent (req, res) {
     res.send (roomlist);
 });
 
+/* API to control the bulbs */
 app.put ("/Lightswitch/:room/:command/:param?", function (req, res) {
 
     /* Check the room */
@@ -132,6 +138,7 @@ app.put ("/Lightswitch/:room/:command/:param?", function (req, res) {
     }
     var command = req.params.command;
 
+    /* Handle the optional parameter */
     var param = 0x00;
     if (req.params.param)
     {
@@ -140,6 +147,7 @@ app.put ("/Lightswitch/:room/:command/:param?", function (req, res) {
         param = Math.max (param, 0x00);
     }
 
+    /* Respond to the request and kick-off the execution */
     res.send( { Result: "Ack" } );
     execute (room, command, param);
 });

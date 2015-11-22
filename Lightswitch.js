@@ -18,6 +18,7 @@ Room["Lamps"]   = { bridge: fluffylight, model: "rgb",   group: [0] };
 Room["Hallway"] = { bridge: fluffylight, model: "white", group: [1] };
 Room["Kitchen"] = { bridge: fluffylight, model: "white", group: [2] };
 Room["Lounge" ] = { bridge: fluffylight, model: "rgbw",  group: [1, 2] };
+Room["Desk" ] = { bridge: fluffylight, model: "rgbw",  group: [4] };
 
 /* Command sets for various LED bulb models */
 var Command = {};

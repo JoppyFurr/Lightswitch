@@ -123,7 +123,7 @@ app.get ("/Lightswitch/List/", function onListenEvent (req, res) {
 });
 
 /* API to control the bulbs */
-app.put ("/Lightswitch/:room/:command/:param?", function (req, res) {
+app.post ("/Lightswitch/:room/:command/:param?", function (req, res) {
 
     /* Check the room */
     if (!(req.params.room in Room)) {

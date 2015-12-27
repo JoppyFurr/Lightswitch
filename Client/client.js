@@ -17,7 +17,7 @@
                 command = command + "/" + param;
             }
 
-            $http.put ("http://ferret:3000/Lightswitch/" + this.active_room.name + "/" + command).
+            $http.post ("http://ferret:3000/Lightswitch/" + this.active_room.name + "/" + command).
                 then (function (res) { if (res.data.Result != "Ack") { alert (res.data.Result) } },
                       function (res) { alert ( "AJAX Failure" ); });
         };

@@ -7,8 +7,8 @@
 
 /* Bridge configuration */
 var fluffylight = {
-    hostname: "Fluffylight",
-    port: 50000
+    hostname: "Fluffylight.joppyfurr.lc",
+    port: 8899
 };
 
 /* Room configuration */

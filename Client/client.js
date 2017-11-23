@@ -2,7 +2,7 @@
     var app = angular.module ("Lightswitch", []);
 
     app.controller ("LightswitchController", function ($scope, $http) {
-        $http.get ("http://ferret:3000/Lightswitch/List/").
+        $http.get ("/Lightswitch/List/").
             then (function (res) { $scope.roomlist = res.data; },
                   function (res) { alert ( "Unable to retrieve room list" ); } );
 
@@ -17,7 +17,7 @@
                 command = command + "/" + param;
             }
 
-            $http.post ("http://ferret:3000/Lightswitch/" + this.active_room.name + "/" + command).
+            $http.post ("/Lightswitch/" + this.active_room.name + "/" + command).
                 then (function (res) { if (res.data.Result != "Ack") { alert (res.data.Result) } },
                       function (res) { alert ( "AJAX Failure" ); });
         };
